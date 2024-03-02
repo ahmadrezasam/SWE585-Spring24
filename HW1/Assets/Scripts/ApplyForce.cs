@@ -15,6 +15,6 @@ public class ApplyForce : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        rb.AddForce(Vector3.up * 4f); // Add force upwards
+        rb.AddForce(Vector3.up * 10f); // Add force upwards
     }
 }
