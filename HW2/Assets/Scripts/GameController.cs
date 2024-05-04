@@ -1,14 +1,19 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System.Collections;
+
 public class GameController : MonoBehaviour
 {
     public GameObject player;
     private GameObject keyObject;
 
-    public TMP_Text messageText;
+    public static TMP_Text messageText;
+
     private bool haveTheKey = false;
     public bool hasWon = false;
+
+    public static bool hasLost = false;
 
     public float pickupRange = 2f;
 
@@ -19,6 +24,7 @@ public class GameController : MonoBehaviour
             keyObject = other.gameObject;
             messageText.text = "Press 'E' to pick up the key";
         }
+
         if (other.CompareTag("Door") && haveTheKey)
         {
             WinGame();
@@ -36,6 +42,8 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
+  
+        messageText = FindObjectOfType<TMP_Text>();
 
         if (player == null)
         {
@@ -99,11 +107,21 @@ public class GameController : MonoBehaviour
     private void WinGame()
     {
         hasWon = true;
-        messageText.text = "You Win! Press 'R' to restart.";
+        hasLost = true;
+        messageText.color = Color.green;
+        messageText.text = "You Won! Press 'R' to restart.";
     }
 
-    public void RestartGame()
+    public void KillPlayer(GameObject player)
     {
+        messageText.color = Color.red;
+        messageText.text = "You Lost! Press 'R' to restart.";
+        hasLost = true;
+    }
+
+    public static void RestartGame()
+    {
+        hasLost = false;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

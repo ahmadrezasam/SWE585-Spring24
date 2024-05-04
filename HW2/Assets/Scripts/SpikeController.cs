@@ -15,30 +15,23 @@ public class SpikeController : MonoBehaviour
     public float moveSpeed = 1f; // Speed of the spikes' movement
     public float delayBeforeStart = 1f; // Delay before the spikes start moving
 
-    public TMP_Text messageText;
-    public PlayerController playerControllerScript;
+    public GameController gameController;
 
     void Start()
     {
         GameObject parentObject = GameObject.FindGameObjectWithTag("Trap");
-        messageText = FindObjectOfType<TMP_Text>();
-        playerControllerScript = FindObjectOfType<PlayerController>();
+        gameController = FindObjectOfType<GameController>();
 
-        // Get all the spikes
         if (parentObject != null)
         {
-            // Get all children of the parent GameObject
             int childCount = parentObject.transform.childCount;
             spikes = new Transform[childCount];
 
-            // Iterate through each child of the parent GameObject
             for (int i = 0; i < childCount; i++)
             {
                 Transform child = parentObject.transform.GetChild(i);
-                // Optionally, check for specific name or component of the child GameObject
                 if (child.name.Contains("Spike"))
                 {
-                    // Store the transform component of the spike GameObject
                     spikes[i] = child;
                     Collider spikeCollider = child.gameObject.AddComponent<BoxCollider>();
                     spikeCollider.isTrigger = true;
@@ -50,7 +43,6 @@ public class SpikeController : MonoBehaviour
             Debug.LogWarning("No GameObject with tag 'TrapParent' found.");
         }
 
-        // Store start and end positions for each spike
         startPositions = new Vector3[spikes.Length];
         endPositions = new Vector3[spikes.Length];
         for (int i = 0; i < spikes.Length; i++)
@@ -59,20 +51,25 @@ public class SpikeController : MonoBehaviour
             endPositions[i] = startPositions[i] + Vector3.up * moveDistance;
         }
 
-        // Start the spikes movement coroutine
         StartCoroutine(MoveSpikes());
+    }
+
+    private void Update()
+    {
+        if (GameController.hasLost && Input.GetKeyDown(KeyCode.R))
+        {
+            GameController.RestartGame();
+        }
     }
 
     IEnumerator MoveSpikes()
     {
         yield return new WaitForSeconds(delayBeforeStart);
 
-        while (true)
+        while (!GameController.hasLost)
         {
-            // Move the spikes up
             yield return MoveSpikesToPositions(endPositions);
 
-            // Move the spikes down
             yield return MoveSpikesToPositions(startPositions);
             yield return new WaitForSeconds(6);
         }
@@ -109,32 +106,9 @@ public class SpikeController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // Check if the colliding object is the player
         if (other.CompareTag("Player"))
         {
-            KillPlayer(other.gameObject);
+            gameController.KillPlayer(other.gameObject);
         }
-    }
-
-    void KillPlayer(GameObject player)
-    {
-        messageText.color = Color.red;
-        messageText.text = "Player killed!";
-
-        if (playerControllerScript != null)
-        {
-            playerControllerScript.DisableMovement();
-        }
-        StartCoroutine(RestartGameAfterDelay(3f));
-    }
-    IEnumerator RestartGameAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        RestartGame();
-    }
-
-    void RestartGame()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

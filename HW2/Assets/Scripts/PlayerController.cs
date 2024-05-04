@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (canMove)
+        if (canMove && !GameController.hasLost)
         {
             float horizontal = Input.GetAxisRaw("Horizontal");
             float vertical = Input.GetAxisRaw("Vertical");
@@ -36,17 +36,5 @@ public class PlayerController : MonoBehaviour
                 controller.Move(movDir.normalized * speed * Time.deltaTime);
             }
         }
-    }
-
-    // Method to disable player movement
-    public void DisableMovement()
-    {
-        canMove = false;
-    }
-
-    // Method to enable player movement
-    public void EnableMovement()
-    {
-        canMove = true;
     }
 }
