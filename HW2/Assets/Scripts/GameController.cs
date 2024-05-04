@@ -39,7 +39,7 @@ public class GameController : MonoBehaviour
 
         if (player == null)
         {
-            player = GameObject.FindGameObjectWithTag("Player2");
+            player = GameObject.FindGameObjectWithTag("Player");
         }
 
         if (keyObject == null)
