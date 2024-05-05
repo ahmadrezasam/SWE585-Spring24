@@ -17,17 +17,17 @@ public class GameController : MonoBehaviour
 
     public float pickupRange = 2f;
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Door") && haveTheKey)
-        {
-            WinGame();
-        }
-        else
-        {
-            KillPlayer(player);
-        }
-    }
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    if (collision.gameObject.CompareTag("Door") && haveTheKey)
+    //    {
+    //        WinGame();
+    //    }
+    //    else
+    //    {
+    //        KillPlayer(player);
+    //    }
+    //}
 
     private void OnTriggerEnter(Collider other)
     {
@@ -37,10 +37,10 @@ public class GameController : MonoBehaviour
             messageText.text = "Press 'E' to pick up the key";
         }
 
-        //if (other.CompareTag("Door") && haveTheKey)
-        //{
-        //    WinGame();
-        //}
+        if (other.CompareTag("Door") && haveTheKey)
+        {
+            WinGame();
+        }
     }
 
     private void OnTriggerExit(Collider other)
